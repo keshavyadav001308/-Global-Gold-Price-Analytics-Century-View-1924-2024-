@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 import yfinance as yf
-from pandas_datareader import data as pdr
+
 
 # ---------------------------
 # PAGE CONFIG
@@ -55,17 +55,26 @@ def load_gold_data():
 
 @st.cache_data
 def load_cpi_data():
-    cpi = pdr.DataReader("CPIAUCSL", "fred", start="1924-01-01")
+    cpi = yf.download(
+        "^CPI",
+        start="1924-01-01",
+        progress=False
+    )
+
+    if isinstance(cpi.columns, pd.MultiIndex):
+        cpi.columns = cpi.columns.get_level_values(0)
+
     cpi = cpi.reset_index()
-    cpi["Year"] = cpi["DATE"].dt.year
+    cpi["Year"] = cpi["Date"].dt.year
 
     cpi = (
-        cpi.groupby("Year", as_index=False)["CPIAUCSL"]
+        cpi.groupby("Year", as_index=False)["Close"]
         .mean()
-        .rename(columns={"CPIAUCSL": "CPI"})
+        .rename(columns={"Close": "CPI"})
     )
 
     return cpi
+
 
 
 @st.cache_data
