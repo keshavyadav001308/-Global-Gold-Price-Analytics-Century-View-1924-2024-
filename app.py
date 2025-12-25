@@ -139,7 +139,7 @@ cagr = (
     (current_price / filtered_df.iloc[0]["Gold_Price_USD"]) ** (1 / years) - 1
 ) * 100 if years > 0 else 0
 
-col1.metric("Current Gold Price", f"${current_price:,.2f}")
+col1.metric("2024 Gold Price", f"${current_price:,.2f}")
 col2.metric("All-Time High", f"${ath_price:,.2f}")
 col3.metric("CAGR", f"{cagr:.2f}%")
 col4.metric("Period", f"{years} Years")
